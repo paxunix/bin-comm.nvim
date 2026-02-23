@@ -107,15 +107,15 @@ local function find_or_create_buffer(name)
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_valid(buf) then
       local buf_name = vim.api.nvim_buf_get_name(buf)
-      if buf_name:match(name .. "$") then
+      if buf_name == name or buf_name:match(name .. "$") then
         return buf
       end
     end
   end
 
   local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_name(buf, name)
   vim.bo[buf].buftype = 'nofile'
+  vim.api.nvim_buf_set_name(buf, name)
   return buf
 end
 
@@ -128,6 +128,29 @@ local function create_output_layout()
   local buf_name_only_a = "ONLY-" .. name_a
   local buf_name_ab = "BOTH-" .. name_a .. "+" .. name_b
   local buf_name_only_b = "ONLY-" .. name_b
+
+  -- Delete old output buffers if they exist with different names
+  if state.buf_only_a and vim.api.nvim_buf_is_valid(state.buf_only_a) then
+    local old_name = vim.api.nvim_buf_get_name(state.buf_only_a)
+    if old_name ~= buf_name_only_a and old_name ~= "" then
+      vim.api.nvim_buf_delete(state.buf_only_a, {force = true})
+      state.buf_only_a = nil
+    end
+  end
+  if state.buf_ab and vim.api.nvim_buf_is_valid(state.buf_ab) then
+    local old_name = vim.api.nvim_buf_get_name(state.buf_ab)
+    if old_name ~= buf_name_ab and old_name ~= "" then
+      vim.api.nvim_buf_delete(state.buf_ab, {force = true})
+      state.buf_ab = nil
+    end
+  end
+  if state.buf_only_b and vim.api.nvim_buf_is_valid(state.buf_only_b) then
+    local old_name = vim.api.nvim_buf_get_name(state.buf_only_b)
+    if old_name ~= buf_name_only_b and old_name ~= "" then
+      vim.api.nvim_buf_delete(state.buf_only_b, {force = true})
+      state.buf_only_b = nil
+    end
+  end
 
   state.buf_only_a = find_or_create_buffer(buf_name_only_a)
   state.buf_ab = find_or_create_buffer(buf_name_ab)
