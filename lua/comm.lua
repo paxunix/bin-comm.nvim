@@ -278,6 +278,4 @@ function M.comm()
   setup_resize_autocmd()
 end
 
-vim.api.nvim_create_user_command("Comm", M.comm, {})
-
 return M
