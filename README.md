@@ -1,6 +1,6 @@
 # bin-comm.nvim
 
-Neovim plugin that adds a `:Comm` command for comparing the contents of two diff buffers using /bin/comm.  It's useful to see what lines exist only on the first file, both files, and second file.
+Neovim plugin that adds a `:Comm` command for comparing the contents of two diff buffers using /bin/comm.  It's useful to see what lines exist only in the first file, both files, and second file.
 
 ## Installation
 
